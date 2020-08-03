@@ -1,0 +1,55 @@
+{
+  "overwrite": true,
+  "schema": "./src/graphql/schema.graphql",
+  "documents": "./src/**/*.gql",
+  "generates": {
+    "./src/graphql/types.ts": {
+      "plugins": [
+        {
+          "@graphql-codegen/add": "/** This file is generated, do not edit it. */"
+        },
+        "@graphql-codegen/typescript"
+      ],
+      "config": {
+        "enumsAsTypes": true,
+        "scalars": {
+          "DateTime": "string"
+        }
+      }
+    },
+    "./src/graphql/resolvers-signatures.ts": {
+      "plugins": [
+        {
+          "@graphql-codegen/add": "/** This file is generated, do not edit it. */"
+        },
+        {
+          "@graphql-codegen/add": "import * as types from './types'"
+        },
+        "@graphql-codegen/typescript-resolvers"
+      ],
+      "config": {
+        "namespacedImportName": "types",
+        "contextType": "import('@clientside-graphql/defs').GraphqlContext"
+      }
+    },
+    "./": {
+      "preset": "near-operation-file",
+      "presetConfig": {
+        "baseTypesPath": "./src/graphql/api.ts",
+        "extension": ".gql.d.ts"
+      },
+      "plugins": [
+        {
+          "@graphql-codegen/add": "/** This file is generated, do not edit it. */"
+        },
+        "@graphql-codegen/typescript-operations"
+      ],
+      "config": {
+        "addOperationExport": true
+      }
+    }
+  },
+  "hooks": {
+    "afterAllFileWrite": "npx prettier --write"
+  }
+}
