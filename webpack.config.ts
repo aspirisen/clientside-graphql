@@ -3,7 +3,7 @@ import { TsconfigPathsPlugin } from "tsconfig-paths-webpack-plugin";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import template from "html-webpack-template";
 import NodePolyfillPlugin from "node-polyfill-webpack-plugin";
-import { GraphQLCodegenWebpackPlugin } from 'graphql-codegen-webpack-plugin'
+import { GraphQLCodegenWebpackPlugin } from "graphql-codegen-webpack-plugin";
 import { GraphqlSchemaCreator } from "./src/api/interop/GraphqlSchemaCreator";
 
 const config = {
@@ -22,7 +22,7 @@ const config = {
   devtool: "eval",
 
   resolve: {
-    extensions: [".tsx", ".ts", ".js", ".jsx"],
+    extensions: [".ts", ".tsx", ".mjs", ".js"],
     plugins: [new TsconfigPathsPlugin({})],
     alias: {
       fs: "memfs",
@@ -34,19 +34,9 @@ const config = {
   module: {
     rules: [
       {
-        test: /\.mjs$/,
-        include: /node_modules/,
-        type: "javascript/auto",
-      },
-      {
         test: /\.tsx?$/,
         exclude: /node_modules/,
         loader: "ts-loader",
-      },
-      {
-        test: /\.(graphql|gql)$/,
-        exclude: /node_modules/,
-        loader: "graphql-tag/loader",
       },
     ],
   },
@@ -66,7 +56,7 @@ const config = {
     }),
     new GraphqlSchemaCreator(),
     new GraphQLCodegenWebpackPlugin({
-      configPath: path.resolve(__dirname, './codegen.json'),
+      configPath: path.resolve(__dirname, "./codegen.json"),
     }),
   ],
 };
