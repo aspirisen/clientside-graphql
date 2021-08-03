@@ -1,11 +1,8 @@
-import React from "react";
-import { useQuery } from "@apollo/react-hooks";
-import { GetTODO, GetTodoQuery, GetTodoQueryVariables } from "./gql/Hello.gql";
+import { useGetUsersQuery } from "./graphql/Hello.requests.gql";
 
 export function Hello() {
-  const { data, error } = useQuery<GetTodoQuery, GetTodoQueryVariables>(
-    GetTODO
-  );
+  const { data, error } = useGetUsersQuery();
+  console.log(error);
 
-  return <div>Hello component - {JSON.stringify(error || data, undefined, 4)}</div>;
+  return <pre>Hello component - {JSON.stringify(data, undefined, 4)}</pre>;
 }

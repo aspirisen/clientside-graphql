@@ -1,11 +1,10 @@
-import React from "react";
-import { GraphQL } from "./GraphQL";
+import { GraphQLProvider } from "./GraphQLProvider";
 import { Hello } from "../components/Hello";
 
 export function Application() {
   return (
-    <GraphQL>
+    <GraphQLProvider>
       <Hello />
-    </GraphQL>
+    </GraphQLProvider>
   );
 }

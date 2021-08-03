@@ -1,11 +1,12 @@
 import * as path from "path";
-import * as webpack from "webpack";
 import { TsconfigPathsPlugin } from "tsconfig-paths-webpack-plugin";
-import "webpack-dev-server";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import template from "html-webpack-template";
+import NodePolyfillPlugin from "node-polyfill-webpack-plugin";
+import { GraphQLCodegenWebpackPlugin } from 'graphql-codegen-webpack-plugin'
+import { GraphqlSchemaCreator } from "./src/api/interop/GraphqlSchemaCreator";
 
-const config: webpack.Configuration = {
+const config = {
   mode: "development",
   context: path.resolve(__dirname, "src"),
   entry: ["./bootstrap"],
@@ -18,11 +19,16 @@ const config: webpack.Configuration = {
     globalObject: "this",
   },
 
-  devtool: "#eval",
+  devtool: "eval",
 
   resolve: {
     extensions: [".tsx", ".ts", ".js", ".jsx"],
     plugins: [new TsconfigPathsPlugin({})],
+    alias: {
+      fs: "memfs",
+      [require.resolve("type-graphql/dist/helpers/loadResolversFromGlob.js")]:
+        false,
+    },
   },
 
   module: {
@@ -52,13 +58,15 @@ const config: webpack.Configuration = {
   },
 
   plugins: [
+    new NodePolyfillPlugin(),
     new HtmlWebpackPlugin({
       template,
       title: "Client-side GraphQL",
       appMountId: "app",
     }),
-    new webpack.DefinePlugin({
-      "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV),
+    new GraphqlSchemaCreator(),
+    new GraphQLCodegenWebpackPlugin({
+      configPath: path.resolve(__dirname, './codegen.json'),
     }),
   ],
 };

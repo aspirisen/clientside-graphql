@@ -1,55 +1,60 @@
 {
   "overwrite": true,
-  "schema": "./src/graphql/schema.graphql",
-  "documents": "./src/**/*.gql",
+  "schema": "./src/schema.graphql",
+  "documents": ["./src/**/*.requests.{ts,tsx}"],
   "generates": {
-    "./src/graphql/types.ts": {
+    "./src/api/types.ts": {
       "plugins": [
+        "@graphql-codegen/typescript",
         {
-          "@graphql-codegen/add": "/** This file is generated, do not edit it. */"
-        },
-        "@graphql-codegen/typescript"
+          "add": {
+            "content": "/* eslint-disable */\n"
+          }
+        }
       ],
       "config": {
+        "skipTypename": true,
         "enumsAsTypes": true,
         "scalars": {
           "DateTime": "string"
         }
       }
     },
-    "./src/graphql/resolvers-signatures.ts": {
+
+    "./src/api/possibleTypes.ts": {
       "plugins": [
+        "fragment-matcher",
         {
-          "@graphql-codegen/add": "/** This file is generated, do not edit it. */"
-        },
-        {
-          "@graphql-codegen/add": "import * as types from './types'"
-        },
-        "@graphql-codegen/typescript-resolvers"
+          "add": {
+            "content": "/* eslint-disable */\n"
+          }
+        }
       ],
-      "config": {
-        "namespacedImportName": "types",
-        "contextType": "import('@clientside-graphql/defs').GraphqlContext"
-      }
+      "config": { "useExplicitTyping": true }
     },
+
     "./": {
       "preset": "near-operation-file",
       "presetConfig": {
-        "baseTypesPath": "./src/graphql/api.ts",
-        "extension": ".gql.d.ts"
+        "folder": "graphql",
+        "baseTypesPath": "./src/api/types.ts",
+        "extension": ".gql.ts"
       },
       "plugins": [
+        "@graphql-codegen/typescript-operations",
+        "@graphql-codegen/typescript-react-apollo",
         {
-          "@graphql-codegen/add": "/** This file is generated, do not edit it. */"
-        },
-        "@graphql-codegen/typescript-operations"
+          "add": {
+            "content": "/* eslint-disable */\n"
+          }
+        }
       ],
       "config": {
-        "addOperationExport": true
+        "skipTypeNameForRoot": true,
+        "skipTypename": true,
+        "withHooks": true,
+        "reactApolloVersion": 3
       }
     }
-  },
-  "hooks": {
-    "afterAllFileWrite": "npx prettier --write"
   }
 }
