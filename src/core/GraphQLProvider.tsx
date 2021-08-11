@@ -5,7 +5,7 @@ import {
   ApolloProvider,
   InMemoryCache,
 } from "@apollo/react-hooks";
-import { SchemaLink } from "apollo-link-schema";
+import { SchemaLink } from "@apollo/client/link/schema";
 import { createSchema } from "api/interop/schemaCreator";
 import introspectionResult from "api/possibleTypes";
 
@@ -20,7 +20,7 @@ export function GraphQLProvider(props: React.PropsWithChildren<{}>) {
         cache: new InMemoryCache({
           possibleTypes: introspectionResult.possibleTypes,
         }),
-        link: new SchemaLink({ schema }) as any,
+        link: new SchemaLink({ schema }),
       });
 
       setClient(newClient);
